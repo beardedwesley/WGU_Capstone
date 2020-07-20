@@ -1,4 +1,4 @@
-package model;
+package BLT_Scheduler.model;
 
 import java.sql.Timestamp;
 
@@ -57,15 +57,16 @@ public class CityState {
     /* Overrides */
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (obj.getClass().equals(CityState.class)) {
-            if (this.csID == ((CityState) obj).getCsID()) {
-                return true;
-            }
+            return this.csID == ((CityState) obj).getCsID();
         }
         return false;
     }
     @Override
     public String toString() {
-        return city + ", " + state + ((Integer) zipcode).toString();
+        return city + ", " + state + " " + ((Integer) zipcode).toString();
     }
 }

@@ -1,25 +1,26 @@
-package controller;
+package BLT_Scheduler.controller;
 
-import data.DerbyDBDriver;
+import BLT_Scheduler.Main;
+import BLT_Scheduler.data.DerbyDBDriver;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import model.CityState;
-import model.Contact;
-import model.Main;
-
+import BLT_Scheduler.model.CityState;
+import BLT_Scheduler.model.Contact;
+import javafx.scene.input.KeyEvent;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ContactListViewController implements Initializable {
     private TableView.TableViewSelectionModel<Contact> contSelectModel;
-    private Contact selected;
     private boolean flagIsNew = false;
     @FXML
-    private TextField contFirstTxt, contLastTxt, contPhoneTxt, contAdd1Txt, contAdd2Txt, contCityTxt, contStateTxt, contPCTxt;
+    private TextField contFirstTxt, contLastTxt, contPhoneTxt, contAdd1Txt, contAdd2Txt, contCityTxt, contStateTxt, contPCTxt, contNameSearch, contPhoneSearch, contCitySearch, contStateSearch;
     @FXML
     private TableView<Contact> contListTbl;
     @FXML
@@ -27,16 +28,16 @@ public class ContactListViewController implements Initializable {
     @FXML
     private TableColumn<Contact, Integer> contPhoneCol;
 
+    /* Action-Triggered events */
     @FXML
     void onNewBtn(ActionEvent event) {
         clearAllFields();
         flagIsNew = true;
     }
-
     @FXML
     void onDelBtn(ActionEvent event) {
         if (flagIsNew) {
-            fillAllFields(selected);
+            fillAllFields(Main.selectedContact);
             flagIsNew = false;
             return;
         } else {
@@ -44,14 +45,13 @@ public class ContactListViewController implements Initializable {
                     " contact? All appointments with this contact will be removed. This cannot be undone.");
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    DerbyDBDriver.deleteContact(selected);
-                    Main.updateLists();
+                    Main.deleteContact(Main.selectedContact);
+                    DerbyDBDriver.deleteContact(Main.selectedContact);
                     contSelectModel.selectFirst();
                 }
             });
         }
     }
-
     @FXML
     void onSaveBtn(ActionEvent event) {
 
@@ -84,6 +84,7 @@ public class ContactListViewController implements Initializable {
             contStateTxt.setText(contStateTxt.getText(0, 30));
         }
 
+        Contact contact;
         if (flagIsNew) {
             CityState nwCityState = DerbyDBDriver.findCityState(contCityTxt.getText(), contStateTxt.getText(), Integer.parseInt(contPCTxt.getText()));
             if (nwCityState == null) {
@@ -93,32 +94,90 @@ public class ContactListViewController implements Initializable {
                     e.printStackTrace();
                 }
             }
-            DerbyDBDriver.addContact(contFirstTxt.getText(), contLastTxt.getText(), Integer.parseInt(contPhoneTxt.getText()), contAdd1Txt.getText(), contAdd2Txt.getText(), nwCityState);
+            contact = DerbyDBDriver.addContact(contFirstTxt.getText(), contLastTxt.getText(), Integer.parseInt(contPhoneTxt.getText()), contAdd1Txt.getText(), contAdd2Txt.getText(), nwCityState);
         } else {
-            CityState upCityState = DerbyDBDriver.findCityState(contCityTxt.getText(), contStateTxt.getText(), Integer.parseInt(contPCTxt.getText()));;
+            CityState upCityState = DerbyDBDriver.findCityState(contCityTxt.getText(), contStateTxt.getText(), Integer.parseInt(contPCTxt.getText()));
             if (upCityState == null) {
-                upCityState = selected.getCityState();
+                upCityState = Main.selectedContact.getCityState();
                 upCityState.setCity(contCityTxt.getText());
                 upCityState.setState(contStateTxt.getText());
                 upCityState.setZipcode(Integer.parseInt(contPCTxt.getText()));
-                DerbyDBDriver.updateCityState(upCityState);
+                try {
+                    upCityState = DerbyDBDriver.addCityState(contCityTxt.getText(), contStateTxt.getText(), Integer.parseInt(contPCTxt.getText()));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-            selected.setFirstName(contFirstTxt.getText());
-            selected.setLastName(contLastTxt.getText());
-            selected.setPhone(Integer.parseInt(contPhoneTxt.getText()));
-            selected.setAddress1(contAdd1Txt.getText());
-            selected.setAddress2(contAdd2Txt.getText());
-            selected.setCityState(upCityState);
-            DerbyDBDriver.updateContact(selected);
+            Main.selectedContact.setFirstName(contFirstTxt.getText());
+            Main.selectedContact.setLastName(contLastTxt.getText());
+            Main.selectedContact.setPhone(Integer.parseInt(contPhoneTxt.getText()));
+            Main.selectedContact.setAddress1(contAdd1Txt.getText());
+            Main.selectedContact.setAddress2(contAdd2Txt.getText());
+            Main.selectedContact.setCityState(upCityState);
+            DerbyDBDriver.updateContact(Main.selectedContact);
+            contact = Main.selectedContact;
         }
         flagIsNew = false;
-        Main.updateLists();
+        Main.addContact(contact);
+        contSelectModel.select(contact);
+    }
+    @FXML
+    void onCnxBtn(ActionEvent event) {
+        fillAllFields(Main.selectedContact);
+        flagIsNew = false;
     }
 
     @FXML
-    void onCnxBtn(ActionEvent event) {
-        fillAllFields(selected);
-        flagIsNew = false;
+    void search(KeyEvent event) {
+        ObservableList<Contact> filteredContacts = FXCollections.observableArrayList();
+
+        String nameSearch = contNameSearch.getText();
+        boolean flagName = !(nameSearch.isBlank());
+        String phoneSearch = contPhoneSearch.getText();
+        boolean flagPhone = !(phoneSearch.isBlank());
+        String citySearch = contCitySearch.getText();
+        boolean flagCity = !(citySearch.isBlank());
+        String stateSearch = contStateSearch.getText();
+        boolean flagState = !(stateSearch.isBlank());
+
+        if (flagName || flagPhone || flagCity || flagState) {
+            contListTbl.setItems(Main.getAllContacts());
+        } else {
+            contListTbl.setItems(filteredContacts);
+            return;
+        }
+
+        for (Contact contact : Main.getAllContacts()) {
+            boolean nameMatch = false, phoneMatch = false, cityMatch = false, stateMatch = false;
+
+            if (flagName) {
+                if (contact.toString().toLowerCase().contains(nameSearch.toLowerCase())) {
+                    nameMatch = true;
+                }
+            }
+
+            if (flagPhone) {
+                if (((Integer)contact.getPhone()).toString().contains(phoneSearch)) {
+                    phoneMatch = true;
+                }
+            }
+
+            if (flagCity) {
+                if (contact.getCity().toLowerCase().contains(citySearch.toLowerCase())) {
+                    cityMatch = true;
+                }
+            }
+
+            if (flagState) {
+                if (contact.getState().toLowerCase().contains(stateSearch.toLowerCase())) {
+                    stateMatch = true;
+                }
+            }
+
+            if ((flagName == nameMatch) && (flagPhone == phoneMatch) && (flagCity == cityMatch) && (flagState == stateMatch)) {
+                filteredContacts.add(contact);
+            }
+        }
     }
 
     /* Helper methods */
@@ -154,12 +213,14 @@ public class ContactListViewController implements Initializable {
         contSelectModel = contListTbl.selectionModelProperty().get();
         contSelectModel.selectedIndexProperty().addListener(((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                selected = contSelectModel.getSelectedItem();
-                fillAllFields(selected);
-                flagIsNew = false;
+                Main.selectedContact = contSelectModel.getSelectedItem();
+                fillAllFields(Main.selectedContact);
+                this.flagIsNew = false;
             }
         }));
-        contSelectModel.selectFirst();
+        if (Main.selectedContact == null) {
+            contSelectModel.selectFirst();
+        }
 
     }
 }

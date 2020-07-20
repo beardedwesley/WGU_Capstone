@@ -1,22 +1,18 @@
-package controller;
+package BLT_Scheduler.controller;
 
-import data.DerbyDBDriver;
+import BLT_Scheduler.Main;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import model.Booking;
-import model.Main;
-
+import BLT_Scheduler.model.Booking;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class CalWeekViewController implements Initializable {
-
-
     @FXML
     private TableView<Booking> day1Tbl, day2Tbl, day3Tbl, day4Tbl, day5Tbl, day6Tbl, day7Tbl;
     @FXML
@@ -51,44 +47,37 @@ public class CalWeekViewController implements Initializable {
 
         day1Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
         day2Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
         day3Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
         day4Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
         day5Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
         day6Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
         day7Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
     }

@@ -1,13 +1,12 @@
-package controller;
+package BLT_Scheduler.controller;
 
+import BLT_Scheduler.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import model.Booking;
-import model.Main;
-
+import BLT_Scheduler.model.Booking;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -32,8 +31,7 @@ public class CalMonthViewController implements Initializable {
         day00Col.setText(((Integer) LocalDate.now().getDayOfMonth()).toString());
         day00Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -42,8 +40,7 @@ public class CalMonthViewController implements Initializable {
         day01Col.setText(((Integer) LocalDate.now().plusDays(1).getDayOfMonth()).toString());
         day01Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -52,8 +49,7 @@ public class CalMonthViewController implements Initializable {
         day02Col.setText(((Integer) LocalDate.now().plusDays(2).getDayOfMonth()).toString());
         day02Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -62,8 +58,7 @@ public class CalMonthViewController implements Initializable {
         day03Col.setText(((Integer) LocalDate.now().plusDays(3).getDayOfMonth()).toString());
         day03Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -72,8 +67,7 @@ public class CalMonthViewController implements Initializable {
         day04Col.setText(((Integer) LocalDate.now().plusDays(4).getDayOfMonth()).toString());
         day04Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -82,8 +76,7 @@ public class CalMonthViewController implements Initializable {
         day05Col.setText(((Integer) LocalDate.now().plusDays(5).getDayOfMonth()).toString());
         day05Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -92,8 +85,7 @@ public class CalMonthViewController implements Initializable {
         day06Col.setText(((Integer) LocalDate.now().plusDays(6).getDayOfMonth()).toString());
         day06Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -102,8 +94,7 @@ public class CalMonthViewController implements Initializable {
         day10Col.setText(((Integer) LocalDate.now().plusDays(7).getDayOfMonth()).toString());
         day10Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -112,8 +103,7 @@ public class CalMonthViewController implements Initializable {
         day11Col.setText(((Integer) LocalDate.now().plusDays(8).getDayOfMonth()).toString());
         day11Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -122,8 +112,7 @@ public class CalMonthViewController implements Initializable {
         day12Col.setText(((Integer) LocalDate.now().plusDays(9).getDayOfMonth()).toString());
         day12Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -132,8 +121,7 @@ public class CalMonthViewController implements Initializable {
         day13Col.setText(((Integer) LocalDate.now().plusDays(10).getDayOfMonth()).toString());
         day13Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -142,8 +130,7 @@ public class CalMonthViewController implements Initializable {
         day14Col.setText(((Integer) LocalDate.now().plusDays(11).getDayOfMonth()).toString());
         day14Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -152,8 +139,7 @@ public class CalMonthViewController implements Initializable {
         day15Col.setText(((Integer) LocalDate.now().plusDays(12).getDayOfMonth()).toString());
         day15Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -162,8 +148,7 @@ public class CalMonthViewController implements Initializable {
         day16Col.setText(((Integer) LocalDate.now().plusDays(13).getDayOfMonth()).toString());
         day16Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -172,8 +157,7 @@ public class CalMonthViewController implements Initializable {
         day20Col.setText(((Integer) LocalDate.now().plusDays(14).getDayOfMonth()).toString());
         day20Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -182,8 +166,7 @@ public class CalMonthViewController implements Initializable {
         day21Col.setText(((Integer) LocalDate.now().plusDays(15).getDayOfMonth()).toString());
         day21Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -192,8 +175,7 @@ public class CalMonthViewController implements Initializable {
         day22Col.setText(((Integer) LocalDate.now().plusDays(16).getDayOfMonth()).toString());
         day22Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -202,8 +184,7 @@ public class CalMonthViewController implements Initializable {
         day23Col.setText(((Integer) LocalDate.now().plusDays(17).getDayOfMonth()).toString());
         day23Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -212,8 +193,7 @@ public class CalMonthViewController implements Initializable {
         day24Col.setText(((Integer) LocalDate.now().plusDays(18).getDayOfMonth()).toString());
         day24Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -222,8 +202,7 @@ public class CalMonthViewController implements Initializable {
         day25Col.setText(((Integer) LocalDate.now().plusDays(19).getDayOfMonth()).toString());
         day25Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -232,8 +211,7 @@ public class CalMonthViewController implements Initializable {
         day26Col.setText(((Integer) LocalDate.now().plusDays(20).getDayOfMonth()).toString());
         day26Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -242,8 +220,7 @@ public class CalMonthViewController implements Initializable {
         day30Col.setText(((Integer) LocalDate.now().plusDays(21).getDayOfMonth()).toString());
         day30Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -252,8 +229,7 @@ public class CalMonthViewController implements Initializable {
         day31Col.setText(((Integer) LocalDate.now().plusDays(22).getDayOfMonth()).toString());
         day31Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -262,8 +238,7 @@ public class CalMonthViewController implements Initializable {
         day32Col.setText(((Integer) LocalDate.now().plusDays(23).getDayOfMonth()).toString());
         day32Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -272,8 +247,7 @@ public class CalMonthViewController implements Initializable {
         day33Col.setText(((Integer) LocalDate.now().plusDays(24).getDayOfMonth()).toString());
         day33Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -282,8 +256,7 @@ public class CalMonthViewController implements Initializable {
         day34Col.setText(((Integer) LocalDate.now().plusDays(25).getDayOfMonth()).toString());
         day34Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -292,8 +265,7 @@ public class CalMonthViewController implements Initializable {
         day35Col.setText(((Integer) LocalDate.now().plusDays(26).getDayOfMonth()).toString());
         day35Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -302,8 +274,7 @@ public class CalMonthViewController implements Initializable {
         day36Col.setText(((Integer) LocalDate.now().plusDays(27).getDayOfMonth()).toString());
         day36Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -312,8 +283,7 @@ public class CalMonthViewController implements Initializable {
         day40Col.setText(((Integer) LocalDate.now().plusDays(28).getDayOfMonth()).toString());
         day40Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -322,8 +292,7 @@ public class CalMonthViewController implements Initializable {
         day41Col.setText(((Integer) LocalDate.now().plusDays(29).getDayOfMonth()).toString());
         day41Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -332,8 +301,7 @@ public class CalMonthViewController implements Initializable {
         day42Col.setText(((Integer) LocalDate.now().plusDays(30).getDayOfMonth()).toString());
         day42Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -342,8 +310,7 @@ public class CalMonthViewController implements Initializable {
         day43Col.setText(((Integer) LocalDate.now().plusDays(31).getDayOfMonth()).toString());
         day43Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -352,8 +319,7 @@ public class CalMonthViewController implements Initializable {
         day44Col.setText(((Integer) LocalDate.now().plusDays(32).getDayOfMonth()).toString());
         day44Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -362,8 +328,7 @@ public class CalMonthViewController implements Initializable {
         day45Col.setText(((Integer) LocalDate.now().plusDays(33).getDayOfMonth()).toString());
         day45Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
 
@@ -372,8 +337,7 @@ public class CalMonthViewController implements Initializable {
         day46Col.setText(((Integer) LocalDate.now().plusDays(34).getDayOfMonth()).toString());
         day46Tbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                Main.openHome();
+                Main.selectedBooking = newValue;
             }
         }));
     }

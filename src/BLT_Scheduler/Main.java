@@ -1,22 +1,25 @@
-package model;
+package BLT_Scheduler;
 
-import data.DerbyDBDriver;
+import BLT_Scheduler.data.DerbyDBDriver;
+import BLT_Scheduler.model.TypeID;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import BLT_Scheduler.model.Booking;
+import BLT_Scheduler.model.Contact;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class Main extends Application {
-    public static Booking selected;
+    public static Booking selectedBooking;
+    public static Contact selectedContact;
     private static ObservableList<Booking> bookingsListAll = FXCollections.observableArrayList();
     private static ObservableList<Contact> contactListAll = FXCollections.observableArrayList();
-    private static ObservableList<Type> typeListAll = FXCollections.observableArrayList();
+    private static final ObservableList<TypeID> typeListAll = FXCollections.observableArrayList();
 
     public static ObservableList<Booking> getAllBookings() {
         if (bookingsListAll.isEmpty()) {
@@ -37,7 +40,7 @@ public class Main extends Application {
         }
         return dayList;
     }
-    public static ObservableList<Booking> getTypeBookings(Type type) {
+    public static ObservableList<Booking> getTypeBookings(TypeID type) {
         ObservableList<Booking> typeList = FXCollections.observableArrayList();
         for (Booking booking : getAllBookings()) {
             if (booking.getType().equals(type)) {
@@ -65,44 +68,38 @@ public class Main extends Application {
         }
         return contactListAll;
     }
-    public static ObservableList<Type> getAllTypes() {
+    public static ObservableList<TypeID> getAllTypes() {
         if (typeListAll.isEmpty()) {
-            try {
-                typeListAll = FXCollections.observableArrayList(DerbyDBDriver.getAllTypes());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            typeListAll.add(TypeID.PERFORMANCE);
+            typeListAll.add(TypeID.REHEARSAL);
+            typeListAll.add(TypeID.PRIVATE_EVENT);
+            typeListAll.add(TypeID.PUBLIC_EVENT);
+            typeListAll.add(TypeID.STUDENT_GROUP);
         }
         return typeListAll;
     }
 
-    public static void updateLists() {
-        try {
-            bookingsListAll = FXCollections.observableArrayList(DerbyDBDriver.getAllBookings());
-            contactListAll = FXCollections.observableArrayList(DerbyDBDriver.getAllContacts());
-            typeListAll = FXCollections.observableArrayList(DerbyDBDriver.getAllTypes());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    private static Parent root;
-    private static Scene mainScene;
-    private static Stage mainStage;
-
     @Override
     public void start(Stage primaryStage) throws Exception{
-        mainStage = primaryStage;
-        root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
-        mainScene = new Scene(root);
         primaryStage.setTitle("Theater Schedule");
-        primaryStage.setScene(mainScene);
+        primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("./view/MainView.fxml"))));
+        primaryStage.setOnCloseRequest(windowEvent -> DerbyDBDriver.close());
         primaryStage.show();
     }
 
-    public static void openHome() {
-        mainStage.setScene(Main.mainScene);
-        mainStage.setTitle("Theater Schedule");
-        mainStage.show();
+    public static void addBooking(Booking booking) {
+        bookingsListAll.add(booking);
+        FXCollections.sort(bookingsListAll);
+    }
+    public static void deleteBooking(Booking booking) {
+        bookingsListAll.remove(booking);
+    }
+    public static void addContact(Contact contact) {
+        contactListAll.add(contact);
+        FXCollections.sort(contactListAll);
+    }
+    public static void deleteContact(Contact contact) {
+        contactListAll.remove(contact);
     }
 
 

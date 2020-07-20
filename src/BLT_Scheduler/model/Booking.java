@@ -1,30 +1,26 @@
-package model;
+package BLT_Scheduler.model;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
-public class Booking {
+public abstract class Booking implements Comparable<Booking> {
 
     /* Instance Variables */
     private int bookID;
     private Contact contact;
     private String title, description;
-    private Type type;
-    private Timestamp start, end, updated;
-
-    private DateTimeFormatter sDTF = DateTimeFormatter.ISO_DATE_TIME;
+    private TypeID type;
+    private Timestamp startTime, endTime, updated;
 
     /* Constructor */
-    public Booking(int bookID, Contact contact, String title, String description, Type type, Timestamp start, Timestamp end, Timestamp updated) {
+    public Booking(int bookID, Contact contact, String title, String description, Timestamp startTime, Timestamp endTime, Timestamp updated) {
         this.bookID = bookID;
         this.contact = contact;
         this.title = title;
         this.description = description;
-        this.type = type;
-        this.start = start;
-        this.end = end;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.updated = updated;
     }
 
@@ -57,25 +53,18 @@ public class Booking {
         this.description = description;
     }
 
-    public Type getType() {
-        return type;
-    }
-    public void setType(Type type) {
-        this.type = type;
-    }
-
     public Timestamp getStart() {
-        return start;
+        return startTime;
     }
     public void setStart(Timestamp start) {
-        this.start = start;
+        this.startTime = start;
     }
 
     public Timestamp getEnd() {
-        return end;
+        return endTime;
     }
     public void setEnd(Timestamp end) {
-        this.end = end;
+        this.endTime = end;
     }
 
     public Timestamp getUpdated() {
@@ -86,28 +75,41 @@ public class Booking {
     }
 
     public LocalDate getStartDate() {
-        return start.toLocalDateTime().toLocalDate();
+        return startTime.toLocalDateTime().toLocalDate();
     }
     public LocalTime getStartTime() {
-        return start.toLocalDateTime().toLocalTime();
+        return startTime.toLocalDateTime().toLocalTime();
+    }
+    public LocalTime getEndTime() {
+        return endTime.toLocalDateTime().toLocalTime();
+    }
+    public String getTime() {
+        return getStartTime().toString() + "\n" + getEndTime().toString();
     }
 
-    public String getDetails() {
-        return new StringBuilder().append(title).append("\n").append(sDTF.format(start.toInstant())).toString();
-    }
+    public abstract TypeID getType();
+    public abstract String getDetails();
 
     /* Overrides */
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (obj.getClass().equals(Booking.class)) {
-            if (this.bookID == ((Booking) obj).getBookID()) {
-                return true;
-            }
+            return this.bookID == ((Booking) obj).getBookID();
         }
         return false;
     }
     @Override
+    public int compareTo(Booking booking) {
+        if (booking == null) {
+            throw new NullPointerException();
+        }
+        return this.startTime.compareTo(booking.getStart());
+    }
+    @Override
     public String toString() {
-        return title + sDTF.format(start.toInstant()) + sDTF.format(end.toInstant());
+        return title + "\nStart: " + startTime.toLocalDateTime() + "\nEnd: " + endTime.toLocalDateTime();
     }
 }

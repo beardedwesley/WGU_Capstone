@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<TabPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ReportsViewController">
+<TabPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BLT_Scheduler.controller.ReportsViewController">
     <tabs>
-        <Tab text="Appointments by Type">
+        <Tab text="Bookings by Type">
             <content>
                 <SplitPane dividerPositions="0.3333333333333333">
                     <items>
@@ -31,17 +31,18 @@
                         </VBox>
                         <TableView fx:id="typeBookTbl" prefHeight="200.0" prefWidth="202.0">
                             <columns>
-                                <TableColumn fx:id="typeDateCol" minWidth="25.0" prefWidth="125.0" text="Date" />
-                                <TableColumn fx:id="typeTimeCol" minWidth="25.0" prefWidth="125.0" text="Time" />
-                                <TableColumn fx:id="typeTitleCol" minWidth="25.0" prefWidth="325.0" text="Title" />
-                                <TableColumn fx:id="typeCustCol" minWidth="25.0" prefWidth="225.0" text="Customer" />
+                                <TableColumn fx:id="typeDateCol" editable="false" maxWidth="200.0" minWidth="25.0" prefWidth="100.0" text="Date" />
+                                <TableColumn fx:id="typeStartTimeCol" editable="false" maxWidth="200.0" minWidth="25.0" prefWidth="100.0" text="Start Time" />
+                        <TableColumn fx:id="typeEndTimeCol" editable="false" maxWidth="200.0" minWidth="25.0" prefWidth="100.0" text="End Time" />
+                                <TableColumn fx:id="typeTitleCol" editable="false" maxWidth="600.0" minWidth="25.0" prefWidth="300.0" text="Title" />
+                                <TableColumn fx:id="typeContCol" editable="false" maxWidth="400.0" minWidth="25.0" prefWidth="200.0" text="Contact" />
                             </columns>
                         </TableView>
                     </items>
                 </SplitPane>
             </content>
         </Tab>
-        <Tab text="Appointments by Contact">
+        <Tab text="Bookings by Contact">
             <content>
                 <SplitPane dividerPositions="0.3333333333333333">
                     <items>
@@ -60,10 +61,11 @@
                         </VBox>
                         <TableView fx:id="contBookTbl" prefHeight="200.0" prefWidth="200.0">
                             <columns>
-                                <TableColumn fx:id="contDateCol" minWidth="25.0" prefWidth="125.0" text="Date" />
-                                <TableColumn fx:id="contTimeCol" minWidth="25.0" prefWidth="125.0" text="Time" />
-                                <TableColumn fx:id="contTitleCol" minWidth="25.0" prefWidth="325.0" text="Title" />
-                                <TableColumn fx:id="contTypeCol" minWidth="25.0" prefWidth="225.0" text="Type" />
+                                <TableColumn fx:id="contDateCol" editable="false" maxWidth="200.0" minWidth="25.0" prefWidth="100.0" text="Date" />
+                                <TableColumn fx:id="contStartTimeCol" editable="false" maxWidth="200.0" minWidth="25.0" prefWidth="100.0" text="Start Time" />
+                        <TableColumn fx:id="contEndTimeCol" editable="false" maxWidth="200.0" minWidth="25.0" prefWidth="100.0" text="End Time" />
+                                <TableColumn fx:id="contTitleCol" editable="false" maxWidth="600.0" minWidth="25.0" prefWidth="300.0" text="Title" />
+                                <TableColumn fx:id="contTypeCol" editable="false" maxWidth="400.0" minWidth="25.0" prefWidth="200.0" text="Type" />
                             </columns>
                         </TableView>
                     </items>

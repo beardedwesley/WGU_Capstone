@@ -1,8 +1,8 @@
-package model;
+package BLT_Scheduler.model;
 
 import java.sql.Timestamp;
 
-public class Contact {
+public class Contact implements Comparable<Contact> {
 
     /* Instance Variables*/
     private int contactID, phone;
@@ -11,7 +11,6 @@ public class Contact {
     private Timestamp updated;
 
     /* Constructor */
-
     public Contact(int contactID, String firstName, String lastName, int phone, String address1, String address2, CityState cityState, Timestamp updated) {
         this.contactID = contactID;
         this.phone = phone;
@@ -93,12 +92,20 @@ public class Contact {
     /* Overrides */
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (obj.getClass().equals(Contact.class)) {
-            if (this.contactID == ((Contact) obj).getContactID()) {
-                return true;
-            }
+            return this.contactID == ((Contact) obj).getContactID();
         }
         return false;
+    }
+    @Override
+    public int compareTo(Contact contact) {
+        if (contact == null) {
+            throw new NullPointerException();
+        }
+        return this.toString().compareTo(contact.toString());
     }
     @Override
     public String toString() {

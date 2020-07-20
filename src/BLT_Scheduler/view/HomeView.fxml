@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.6" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeViewController">
+<SplitPane dividerPositions="0.6" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BLT_Scheduler.controller.HomeViewController">
     <items>
         <VBox prefHeight="698.0" prefWidth="803.0">
             <children>
@@ -41,7 +41,7 @@
                         <Region HBox.hgrow="ALWAYS" />
                         <VBox>
                             <children>
-                                <Label text="Start Date" />
+                                <Label text="Date" />
                                 <DatePicker fx:id="bookStartDatePkr" onAction="#setStartAvailability" prefHeight="25.0" prefWidth="175.0" />
                             </children>
                             <HBox.margin>
@@ -95,7 +95,7 @@
                         <VBox HBox.hgrow="ALWAYS">
                             <children>
                                 <Label text="Description" />
-                                <TextArea fx:id="bookDescTxt" prefHeight="75.0" prefWidth="475.0" />
+                                <TextArea fx:id="bookDescTxt" prefHeight="75.0" prefWidth="475.0" wrapText="true" />
                             </children>
                         </VBox>
                         <Region HBox.hgrow="ALWAYS" />
@@ -127,17 +127,40 @@
                 <Region prefHeight="25.0" VBox.vgrow="ALWAYS" />
             </children>
         </VBox>
-        <ScrollPane hbarPolicy="NEVER" prefWidth="350.0">
-            <content>
-                <TableView fx:id="agendaTbl" prefHeight="700.0" prefWidth="475.0">
-                    <columns>
-                        <TableColumn fx:id="bookDateCol" prefWidth="100.0" text="Date" />
-                        <TableColumn fx:id="bookTimeCol" text="Time" />
-                        <TableColumn fx:id="bookTitleCol" prefWidth="150.0" text="Title" />
-                        <TableColumn fx:id="apptContCol" prefWidth="135.0" text="Contact" />
-                    </columns>
-                </TableView>
-            </content>
-        </ScrollPane>
+      <VBox>
+         <children>
+            <VBox>
+               <children>
+                  <HBox>
+                     <children>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label alignment="CENTER" contentDisplay="CENTER" minHeight="25.0" prefHeight="25.0" prefWidth="100.0" text="Search" />
+                        <Region HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="bookDateSearch" onKeyTyped="#search" prefWidth="100.0" />
+                        <TextField fx:id="bookTimeSearch" onKeyTyped="#search" prefWidth="80.0" />
+                        <TextField fx:id="bookTitleSearch" onKeyTyped="#search" prefWidth="150.0" />
+                        <TextField fx:id="bookContSearch" onKeyTyped="#search" prefWidth="135.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+              <ScrollPane hbarPolicy="NEVER" prefWidth="350.0">
+                  <content>
+                      <TableView fx:id="agendaTbl" prefHeight="700.0" prefWidth="475.0">
+                          <columns>
+                              <TableColumn fx:id="bookDateCol" prefWidth="100.0" text="Date" />
+                              <TableColumn fx:id="bookTimeCol" text="Time" />
+                              <TableColumn fx:id="bookTitleCol" prefWidth="150.0" text="Title" />
+                              <TableColumn fx:id="bookContCol" prefWidth="135.0" text="Contact" />
+                          </columns>
+                      </TableView>
+                  </content>
+              </ScrollPane>
+         </children>
+      </VBox>
     </items>
 </SplitPane>

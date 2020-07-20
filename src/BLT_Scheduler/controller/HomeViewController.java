@@ -1,6 +1,7 @@
-package controller;
+package BLT_Scheduler.controller;
 
-import data.DerbyDBDriver;
+import BLT_Scheduler.Main;
+import BLT_Scheduler.data.DerbyDBDriver;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,24 +9,26 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import model.*;
+import BLT_Scheduler.model.*;
+import javafx.scene.input.KeyEvent;
+
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.*;
-import java.util.ListIterator;
 import java.util.ResourceBundle;
 
 public class HomeViewController implements Initializable {
 
     /* Instance Variables */
     private boolean flagIsNew = false;
-    private ObservableList<LocalTime> bookStart = FXCollections.observableArrayList();
-    private ObservableList<LocalTime> bookEnd = FXCollections.observableArrayList();
+    private final ObservableList<LocalTime> bookStart = FXCollections.observableArrayList();
+    private final ObservableList<LocalTime> bookEnd = FXCollections.observableArrayList();
+    private final ObservableList<Booking> futureBookList = FXCollections.observableArrayList();
     private ObservableList<Booking> dayBookList = FXCollections.observableArrayList();
 
     /* GUI Elements */
     @FXML
-    private TextField bookTitleTxt;
+    private TextField bookTitleTxt, bookDateSearch, bookTimeSearch, bookTitleSearch, bookContSearch;
     @FXML
     private DatePicker bookStartDatePkr;
     @FXML
@@ -33,7 +36,7 @@ public class HomeViewController implements Initializable {
     @FXML
     private ComboBox<Contact> bookContOpt;
     @FXML
-    private ComboBox<Type> bookTypeOpt;
+    private ComboBox<TypeID> bookTypeOpt;
     @FXML
     private TextArea bookDescTxt;
 
@@ -49,13 +52,14 @@ public class HomeViewController implements Initializable {
     /* Action-Triggered Methods */
     @FXML
     void bookNewBtnClk(ActionEvent event) {
+        agendaTbl.getSelectionModel().clearSelection();
         clearAllFields();
         flagIsNew = true;
     }
     @FXML
     void bookDelBtnClk(ActionEvent event) {
         if (flagIsNew) {
-            fillAllFields(Main.selected);
+            fillAllFields(Main.selectedBooking);
             flagIsNew = false;
             return;
         }
@@ -63,8 +67,11 @@ public class HomeViewController implements Initializable {
                 " booking? This cannot be undone.");
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                DerbyDBDriver.deleteBooking(Main.selected);
-                Main.updateLists();
+                Main.deleteBooking(Main.selectedBooking);
+                DerbyDBDriver.deleteBooking(Main.selectedBooking);
+                if (Main.selectedBooking.getStartDate().equals(LocalDate.now()) || Main.selectedBooking.getStartDate().isAfter(LocalDate.now())) {
+                    futureBookList.remove(Main.selectedBooking);
+                }
                 agendaTbl.getSelectionModel().select(1);//selected = null;
                 }
             });
@@ -85,41 +92,54 @@ public class HomeViewController implements Initializable {
         }
         Timestamp startTmstmp = Timestamp.valueOf(LocalDateTime.of(bookStartDatePkr.getValue(), bookStartTimeOpt.getValue()));
         Timestamp endTmstmp = Timestamp.valueOf(LocalDateTime.of(bookStartDatePkr.getValue(), bookEndTimeOpt.getValue()));
+        Booking booking;
 
         //New booking
         if (flagIsNew) {
-            Booking nwBook = DerbyDBDriver.addBooking(bookContOpt.getValue(), bookTitleTxt.getText(), bookDescTxt.getText(), bookTypeOpt.getValue(), startTmstmp, endTmstmp);
-        } else {
-            Main.selected.setContact(bookContOpt.getValue());
-            Main.selected.setTitle(bookTitleTxt.getText());
-            Main.selected.setDescription(bookDescTxt.getText());
-            Main.selected.setType(bookTypeOpt.getValue());
-            Main.selected.setStart(startTmstmp);
-            Main.selected.setEnd(endTmstmp);
-            DerbyDBDriver.updateBooking(Main.selected);
+            booking = DerbyDBDriver.addBooking(bookContOpt.getValue(), bookTitleTxt.getText(), bookDescTxt.getText(), bookTypeOpt.getValue(), startTmstmp, endTmstmp);
+            Main.addBooking(booking);
+            if (booking.getStartDate().equals(LocalDate.now()) || booking.getStartDate().isAfter(LocalDate.now())) {
+                futureBookList.add(booking);
+            }
+        } else {//Update Booking
+            if (Main.selectedBooking.getType().equals(bookTypeOpt.getValue())) {
+                Main.selectedBooking.setContact(bookContOpt.getValue());
+                Main.selectedBooking.setTitle(bookTitleTxt.getText());
+                Main.selectedBooking.setDescription(bookDescTxt.getText());
+                Main.selectedBooking.setStart(startTmstmp);
+                Main.selectedBooking.setEnd(endTmstmp);
+                DerbyDBDriver.updateBooking(Main.selectedBooking);
+                booking = Main.selectedBooking;
+            } else {//specifically for type changes
+                DerbyDBDriver.deleteBooking(Main.selectedBooking);
+                booking = DerbyDBDriver.addBooking(bookContOpt.getValue(), bookTitleTxt.getText(), bookDescTxt.getText(), bookTypeOpt.getValue(), startTmstmp, endTmstmp);
+            }
         }
         flagIsNew = false;
-        Main.updateLists();
+        agendaTbl.getSelectionModel().select(booking);
     }
     @FXML
     void bookCanxBtnClk(ActionEvent event) {
-        fillAllFields(Main.selected);
+        fillAllFields(Main.selectedBooking);
         flagIsNew = false;
     }
-
 
     @FXML
     void setStartAvailability(ActionEvent event) {
         bookStart.clear();
         bookEnd.clear();
+        if (bookStartDatePkr.getValue() == null) {
+            return; //want lists to be blank if date has not yet been selected & event occurs when field is cleared by system
+        }
         dayBookList = Main.getDayBookings(bookStartDatePkr.getValue());
+        FXCollections.sort(dayBookList);
 
         LocalTime busEnd = LocalTime.of(20, 0);
         LocalTime busCurr = LocalTime.of(8, 0);
 
         for (Booking booking : dayBookList) {
-            if (booking.equals(Main.selected)) {
-                for (;busCurr.isBefore(booking.getEnd().toLocalDateTime().toLocalTime()); busCurr = busCurr.plusMinutes(15)) {
+            if (booking.equals(Main.selectedBooking)) {
+                for (;busCurr.isBefore(booking.getEndTime()); busCurr = busCurr.plusMinutes(15)) {
                     LocalTime avail = LocalTime.of(busCurr.getHour(), busCurr.getMinute());
                     bookStart.add(avail);
                 }
@@ -127,13 +147,13 @@ public class HomeViewController implements Initializable {
             }
 
             for (; busCurr.isBefore(busEnd); busCurr = busCurr.plusMinutes(15)) {
-                if (busCurr.isBefore(booking.getStart().toLocalDateTime().toLocalTime())) {
+                if (busCurr.isBefore(booking.getStartTime())) {
                     LocalTime avail = LocalTime.of(busCurr.getHour(), busCurr.getMinute());
                     bookStart.add(avail);
-                } else if (busCurr.equals(booking.getStart().toLocalDateTime().toLocalTime()) ||
-                        (busCurr.isAfter(booking.getStart().toLocalDateTime().toLocalTime()) && busCurr.isBefore(booking.getEnd().toLocalDateTime().toLocalTime()))) {
+                } else if (busCurr.equals(booking.getStartTime()) ||
+                        (busCurr.isAfter(booking.getStartTime()) && busCurr.isBefore(booking.getEndTime()))) {
                     continue;
-                } else if (busCurr.equals(booking.getEnd().toLocalDateTime().toLocalTime())) {
+                } else if (busCurr.equals(booking.getEndTime())) {
                     break;
                 }
             }
@@ -169,14 +189,14 @@ public class HomeViewController implements Initializable {
                     }
                 } else {
                     for (; busCurr.isBefore(busEnd); busCurr = busCurr.plusMinutes(15)) {
-                        if (busCurr.isBefore(booking.getStart().toLocalDateTime().toLocalTime())) {
+                        if (busCurr.isBefore(booking.getStartTime())) {
                             LocalTime avail = LocalTime.of(busCurr.getHour(), busCurr.getMinute());
                             bookEnd.add(avail);
-                        } else if (busCurr.equals(booking.getStart().toLocalDateTime().toLocalTime())) {
+                        } else if (busCurr.equals(booking.getStartTime())) {
                             LocalTime avail = LocalTime.of(busCurr.getHour(), busCurr.getMinute());
                             bookEnd.add(avail);
                             return;
-                        } else if (busCurr.isAfter(booking.getStart().toLocalDateTime().toLocalTime())) {
+                        } else if (busCurr.isAfter(booking.getStartTime())) {
                             return;
                         }
                     }
@@ -185,20 +205,77 @@ public class HomeViewController implements Initializable {
         }
     }
 
+    @FXML
+    void search(KeyEvent event) {
+        ObservableList<Booking> filteredBookings = FXCollections.observableArrayList();
+
+        String dateSearch = bookDateSearch.getText();
+        boolean flagDate = !(dateSearch.isBlank());
+        String timeSearch = bookTimeSearch.getText();
+        boolean flagTime = !(timeSearch.isBlank());
+        String titleSearch = bookTitleSearch.getText();
+        boolean flagTitle = !(titleSearch.isBlank());
+        String contactSearch = bookContSearch.getText();
+        boolean flagContact = !(contactSearch.isBlank());
+
+        if (flagDate || flagTime || flagTitle || flagContact) {
+            agendaTbl.setItems(filteredBookings);
+        } else {
+            agendaTbl.setItems(futureBookList);
+            return;
+        }
+
+        for (Booking booking : futureBookList) {
+            boolean dateMatch = false, timeMatch = false, titleMatch = false, contactMatch = false;
+
+            if (flagDate) {
+                if (booking.getStartDate().toString().contains(dateSearch) ||
+                        booking.getEnd().toLocalDateTime().toLocalDate().toString().contains(dateSearch)) {
+                    dateMatch = true;
+                }
+            }
+
+            if (flagTime) {
+                if (booking.getStartTime().toString().contains(timeSearch) ||
+                    booking.getEndTime().toString().contains(timeSearch)) {
+                    timeMatch = true;
+                }
+            }
+
+            if (flagTitle) {
+                if (booking.getTitle().toLowerCase().contains(titleSearch.toLowerCase())) {
+                    titleMatch = true;
+                }
+            }
+
+            if (flagContact) {
+                if (booking.getContact().toString().toLowerCase().contains(contactSearch.toLowerCase())) {
+                    contactMatch = true;
+                }
+            }
+
+            if ((flagDate == dateMatch) && (flagTime == timeMatch) && (flagTitle == titleMatch) && (flagContact == contactMatch)) {
+                filteredBookings.add(booking);
+            }
+        }
+
+    }
 
     /* Prep All the Things! */
     @Override
     public void initialize(URL location, ResourceBundle rB) {
+        futureBookings(Main.getAllBookings());
+
         //TableView for Agenda set up
-        agendaTbl.setItems(Main.getAllBookings());
+        agendaTbl.setItems(futureBookList);
         bookDateCol.setCellValueFactory(new PropertyValueFactory<>("startDate"));
-        bookTimeCol.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+        bookTimeCol.setCellValueFactory(new PropertyValueFactory<>("time"));
         bookTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
         bookContCol.setCellValueFactory(new PropertyValueFactory<>("contact"));
         agendaTbl.selectionModelProperty().get().selectedItemProperty().addListener(((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                Main.selected = newValue;
-                fillAllFields(Main.selected);
+                Main.selectedBooking = newValue;
+                fillAllFields(Main.selectedBooking);
             }
         }));
 
@@ -209,18 +286,16 @@ public class HomeViewController implements Initializable {
         bookStartTimeOpt.setVisibleRowCount(7);
         bookEndTimeOpt.setItems(bookEnd);
         bookEndTimeOpt.setVisibleRowCount(7);
+        bookTypeOpt.setItems(Main.getAllTypes());
 
         //If no current selection, select first booking for today
-        if (Main.selected == null) {
-            boolean past = true;
+        if (Main.selectedBooking == null) {
             Booking today = null;
-            ListIterator<Booking> iterator = Main.getAllBookings().listIterator();
-            while (past) {
-                today = iterator.next();
-                if (today == null) {
+            ObservableList<Booking> list = Main.getAllBookings();
+            for (int i = 0; i < list.size(); i++) {
+                today = list.get(i);
+                if (today.getStart().toLocalDateTime().toLocalDate().equals(LocalDate.now())) {
                     break;
-                } else if (today.getStart().toLocalDateTime().toLocalDate().equals(LocalDate.now())) {
-                    past = false;
                 }
             }
             agendaTbl.getSelectionModel().select(today);
@@ -229,13 +304,15 @@ public class HomeViewController implements Initializable {
 
     /* Helper Methods */
     private void clearAllFields(){
-        bookTitleTxt.setText("");
+        bookTitleTxt.clear();
         bookStartDatePkr.setValue(LocalDate.now());
         bookStartTimeOpt.getSelectionModel().clearSelection();
+        bookStartTimeOpt.setValue(null);
         bookEndTimeOpt.getSelectionModel().clearSelection();
+        bookEndTimeOpt.setValue(null);
         bookContOpt.getSelectionModel().clearSelection();
         bookTypeOpt.getSelectionModel().clearSelection();
-        bookDescTxt.setText("");
+        bookDescTxt.clear();
     }
     private void fillAllFields(Booking booking){
         bookTitleTxt.setText(booking.getTitle());
@@ -245,5 +322,14 @@ public class HomeViewController implements Initializable {
         bookContOpt.setValue(booking.getContact());
         bookTypeOpt.setValue(booking.getType());
         bookDescTxt.setText(booking.getDescription());
+    }
+    private void futureBookings(ObservableList<Booking> allBookings) {
+        futureBookList.clear();
+        for (Booking booking : allBookings) {
+            if (booking.getStartDate().equals(LocalDate.now()) || booking.getStartDate().isAfter(LocalDate.now())) {
+                futureBookList.add(booking);
+            }
+        }
+        FXCollections.sort(futureBookList);
     }
 }
