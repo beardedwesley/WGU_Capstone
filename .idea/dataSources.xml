@@ -5,7 +5,13 @@
       <driver-ref>derby.embedded</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.apache.derby.jdbc.EmbeddedDriver</jdbc-driver>
-      <jdbc-url>jdbc:derby:$PROJECT_DIR$/theaterDB</jdbc-url>
+      <jdbc-url>jdbc:derby:$PROJECT_DIR$/theaterDB;create=true</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="JarTest" uuid="96487b97-36b4-422c-a041-89f59c2bf70c">
+      <driver-ref>derby.embedded</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.apache.derby.jdbc.EmbeddedDriver</jdbc-driver>
+      <jdbc-url>jdbc:derby:$PROJECT_DIR$/out/artifacts/WGU_Capstone_jar/theaterDB</jdbc-url>
     </data-source>
   </component>
 </project>

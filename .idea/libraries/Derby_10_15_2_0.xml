@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Derby 10.15.2.0">
+    <CLASSES>
+      <root url="file:///Library/Java/JavaVirtualMachines/db-derby-10.15.2.0-lib/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file:///Library/Java/JavaVirtualMachines/db-derby-10.15.2.0-lib/lib" recursive="false" />
+  </library>
+</component>
